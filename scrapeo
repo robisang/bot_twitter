@@ -1,0 +1,34 @@
+import time
+import requests
+from bs4 import BeautifulSoup
+import json
+import string
+from selenium import webdriver
+from selenium.webdriver.common.by import By
+from selenium.webdriver.support.ui import WebDriverWait
+from selenium.webdriver.support import expected_conditions as EC
+import re
+import numpy as np
+
+browser = webdriver.Chrome(executable_path='C:\Program Files\Google\Chrome\Application\chromedriver.exe')
+wait = WebDriverWait(browser, 10)
+browser.get('http://argentrends.com/100-frases-del-indio-solari/')
+
+#Incorporo BeautifulSoup
+soup = BeautifulSoup(browser.page_source, 'lxml')
+ 
+#Extraigo la pagina principal y convierto a str
+pagina_frases= soup.find_all("blockquote")
+pagina_frases = str(pagina_frases)
+
+#Limpio las frases
+def cleanhtml(pagina_frases): 
+  cleanr = re.compile('<.*?>')
+  cleantext = re.sub(cleanr, '\n', pagina_frases)
+  return cleantext
+
+texto= cleanhtml(pagina_frases)
+texto_a = texto.split("\n,")
+
+#Guardo en un archivo csv
+np.savetxt("lista_frases.csv", texto_a, delimiter =";",fmt ='% s')
