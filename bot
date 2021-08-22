@@ -1,0 +1,32 @@
+import tweepy
+import csv
+import random
+
+#Levanto el archivo con las frases scrapeadas y obtengo una de forma aleatoria
+
+archivo = open("E:\lista_frases.csv", encoding = "latin1")
+lectura = csv.reader(archivo, delimiter = "\n")
+
+lista = []
+
+for i in lectura:
+    lista.append(i)
+
+valor = random.randint(0, len(lista))
+
+# Conecto con Twitter
+auth = tweepy.OAuthHandler("API KEY", "API SECRET KEY ")
+auth.set_access_token("ACCESS TOKEN", "ACCESS SECRET TOKEN")
+
+# Creo un objeto API
+api = tweepy.API(auth)
+
+#Verifico las credenciales
+try:
+    api.verify_credentials()
+    print("OK")
+except:
+    print("Error")
+    
+#Twitteo 
+api.update_status(*lista[valor], sep = ";")
